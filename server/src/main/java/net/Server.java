@@ -18,6 +18,7 @@ public class Server {
         while(true) {
             Socket client = socket.accept();
             new SimpleServer(client, handlers).start();
+
         }
     }
 

@@ -9,6 +9,7 @@ public class Client {
         for (int i = 0; i < 4; i++) {
             SimpleClient sc = new SimpleClient(i);
             sc.start();
+
         }
     }
 }
