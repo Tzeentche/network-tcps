@@ -8,5 +8,4 @@ public class MorningGreet extends Greatable {
     public String buildResponse(String userName) {
         return "Good Morning, " + userName;
     }
-
 }
