@@ -12,7 +12,7 @@ public class Server {
     public static void main(String[] args) throws IOException, InterruptedException {
         ServerSocket socket = new ServerSocket(25225);
 
-        Map<String, Greatable> handlers = loadHandlers();
+        Map<String, Greetable> handlers = loadHandlers();
 
         System.out.println("Server is started.");
         while(true) {
@@ -21,8 +21,8 @@ public class Server {
         }
     }
 
-    private static Map<String, Greatable> loadHandlers() {
-        Map<String, Greatable> result = new HashMap<>();
+    private static Map<String, Greetable> loadHandlers() {
+        Map<String, Greetable> result = new HashMap<>();
 
         try(InputStream is = Server.class.getClassLoader().getResourceAsStream("server.properties")){
 
@@ -31,9 +31,9 @@ public class Server {
 
             for(Object command : properties.keySet()) {
                 String className = properties.getProperty(command.toString());
-                Class<Greatable> cl = (Class<Greatable>) Class.forName(className);
+                Class<Greetable> cl = (Class<Greetable>) Class.forName(className);
 
-               Greatable handler = cl.getConstructor().newInstance();
+               Greetable handler = cl.getConstructor().newInstance();
                result.put(command.toString(), handler);
             }
 
@@ -48,9 +48,9 @@ public class Server {
 class SimpleServer extends Thread {
 
     private Socket client;
-    private Map<String, Greatable> handlers;
+    private Map<String, Greetable> handlers;
 
-    public SimpleServer(Socket client, Map<String, Greatable> handlers) {
+    public SimpleServer(Socket client, Map<String, Greetable> handlers) {
         this.client = client;
         this.handlers = handlers;
     }
@@ -89,7 +89,7 @@ class SimpleServer extends Thread {
     }
 
     private String buildResponse(String command, String userName) {
-       Greatable handler = handlers.get(command);
+       Greetable handler = handlers.get(command);
        if(handler != null) {
            return handler.buildResponse(userName);
        }

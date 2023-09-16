@@ -1,8 +1,8 @@
 package greet;
 
-import net.Greatable;
+import net.Greetable;
 
-public class MorningGreet extends Greatable {
+public class MorningGreet extends Greetable {
 
     @Override
     public String buildResponse(String userName) {
