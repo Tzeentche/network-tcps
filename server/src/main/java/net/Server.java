@@ -10,11 +10,11 @@ import java.util.Properties;
 public class Server {
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        ServerSocket socket = new ServerSocket(25225);
+        ServerSocket socket = new ServerSocket(25225, 200);
 
         Map<String, Greetable> handlers = loadHandlers();
 
-        System.out.println("Server is started.");
+        System.out.println("Server is started");
         while(true) {
             Socket client = socket.accept();
             new SimpleServer(client, handlers).start();
@@ -24,7 +24,7 @@ public class Server {
     private static Map<String, Greetable> loadHandlers() {
         Map<String, Greetable> result = new HashMap<>();
 
-        try(InputStream is = Server.class.getClassLoader().getResourceAsStream("server.properties")){
+        try (InputStream is = Server.class.getClassLoader().getResourceAsStream("server.properties")) {
 
             Properties properties = new Properties();
             properties.load(is);
@@ -32,15 +32,16 @@ public class Server {
             for(Object command : properties.keySet()) {
                 String className = properties.getProperty(command.toString());
                 Class<Greetable> cl = (Class<Greetable>) Class.forName(className);
-
-               Greetable handler = cl.getConstructor().newInstance();
-               result.put(command.toString(), handler);
+                Greetable handler = cl.getConstructor().newInstance();
+                result.put(command.toString(), handler);
             }
 
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
         }
+
+
         return result;
     }
 }
@@ -55,12 +56,11 @@ class SimpleServer extends Thread {
         this.handlers = handlers;
     }
 
-    @Override
     public void run() {
         handleRequest();
     }
 
-    public void handleRequest() {
+    private void handleRequest() {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
@@ -69,10 +69,9 @@ class SimpleServer extends Thread {
             String[] lines = request.split("\\s+");
             String command = lines[0];
             String userName = lines[1];
-
-            System.out.println("Server got string 1: " + command);
-            System.out.println("Server got string 2: " + userName);
-//            Thread.sleep(10000);
+            System.out.println("Server got string 1:" + command);
+            System.out.println("Server got string 2:" + userName);
+//            Thread.sleep(2000);
 
             String response = buildResponse(command, userName);
             bw.write(response);
@@ -89,10 +88,10 @@ class SimpleServer extends Thread {
     }
 
     private String buildResponse(String command, String userName) {
-       Greetable handler = handlers.get(command);
-       if(handler != null) {
-           return handler.buildResponse(userName);
-       }
-       return "Hello, " + userName;
+        Greetable handler = handlers.get(command);
+        if (handler != null) {
+            return handler.buildResponse(userName);
+        }
+        return "Hello, " + userName;
     }
 }

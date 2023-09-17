@@ -6,6 +6,6 @@ public class EveningGreet extends Greetable {
 
     @Override
     public String buildResponse(String userName) {
-        return "Good Evening, " + userName;
+        return "Good evening, " + userName;
     }
 }
